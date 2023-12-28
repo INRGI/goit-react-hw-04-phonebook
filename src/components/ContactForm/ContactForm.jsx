@@ -1,57 +1,58 @@
 import { nanoid } from 'nanoid';
-import { Component } from "react";
+import { useState } from "react";
 import { Button, Container, Form, Input, Label } from './ContactForm.styled';
 
-class ContactForm extends Component{
-    state = {
-        name: '',
-        number: ''
-    };
+const ContactForm = ({onSubmit}) => {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
 
-    nameId = nanoid();
-    numberId = nanoid();
-    
-    handleSubmit = event => {
+    const nameId = nanoid();
+    const numberId = nanoid();
+
+    const handleSubmit = event => {
         event.preventDefault();
-        this.props.onSubmit({name: this.state.name, number: this.state.number})
-        this.reset();
+
+        onSubmit({ name, number });
+        setName('');
+        setNumber('');
     };
 
-    handleChange = event => {
+    const handleChange = event => {
         const { name, value } = event.target;
-        this.setState({ [name]: value });
+
+        switch (name) {
+            case 'name':
+                setName(value);
+                break;
+            case 'number':
+                setNumber(value);
+                break;
+            default:
+                return;
+        };
     };
 
-    reset = () => {
-        this.setState({
-            name: '',
-            number: ''
-        });
-    };
-
-    render() {
-
-        return (
+    return (
             <Container>
-                <Form onSubmit={this.handleSubmit}>
-                    <Label htmlFor={this.nameId}>
+                <Form onSubmit={handleSubmit}>
+                    <Label htmlFor={nameId}>
                         Name
                         <Input
                             type="text"
                             name="name"
-                            value={this.state.name}
-                            onChange={this.handleChange}
+                            value={name}
+                            onChange={handleChange}
                             required
                         />
                     </Label>
                     
-                    <Label htmlFor={this.numberId}>
+                    <Label htmlFor={numberId}>
                         Number
                         <Input
                             type="tel"
                             name="number"
-                            value={this.state.number}
-                            onChange={this.handleChange}
+                            value={number}
+                            onChange={handleChange}
                             required
                         />
                     </Label>
@@ -60,7 +61,6 @@ class ContactForm extends Component{
                 </Form>
             </Container>
         );
-    };
 };
 
 export default ContactForm;
